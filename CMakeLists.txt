@@ -16,19 +16,8 @@ qt_add_qml_module(appi2c_stmp_demo
     URI i2c_stmp_demo
     QML_FILES
         Main.qml
+        RESOURCES assets/BrushedMetal.jpg assets/dial_no_background.png assets/dial_original.jpg assets/dial_svg.svg go_fonts/Go-Bold-Italic.ttf go_fonts/Go-Bold.ttf go_fonts/Go-Italic.ttf go_fonts/Go-Medium-Italic.ttf go_fonts/Go-Medium.ttf go_fonts/Go-Regular.ttf go_fonts/README
 )
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-set_target_properties(appi2c_stmp_demo PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appi2c_stmp_demo
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
 target_link_libraries(appi2c_stmp_demo
     PRIVATE Qt6::Quick
 )
