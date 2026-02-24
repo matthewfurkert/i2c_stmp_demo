@@ -16,7 +16,7 @@ public:
     static std::unique_ptr<IAS5600Sensor> create() {
 #ifdef USE_REAL_I2C
         qDebug() << "=== AS5600Sensor MODE: REAL I2C (Hardware) ===";
-        return std::make_unique<RealAS5600Sensor>(3);   // change 3 if your bus is different
+        return std::make_unique<RealAS5600Sensor>(0);   // change if your bus is different
 #else
         qDebug() << "=== AS5600Sensor MODE: MOCK (Simulation) ===";
         return std::make_unique<MockAS5600Sensor>();
