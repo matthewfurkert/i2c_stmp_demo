@@ -22,11 +22,11 @@ qt_add_qml_module(appi2c_stmp_demo
         SOURCES i2c/ias5600sensor.h
         SOURCES i2c/mockas5600sensor.h i2c/mockas5600sensor.cpp
         SOURCES i2c/realas5600sensor.h i2c/realas5600sensor.cpp
-        SOURCES i2c/as5600sensorfactory.h
+        SOURCES
         SOURCES i2c/as5600sensor.h i2c/as5600sensor.cpp
 )
 
-option(USE_REAL_I2C "Use real i2c" ON)
+option(USE_REAL_I2C "Use real i2c" OFF)
 if(USE_REAL_I2C)
     target_compile_definitions(appi2c_stmp_demo PRIVATE USE_REAL_I2C)
     message(STATUS "Building with REAL I2C hardware (using /dev/i2c-*)")

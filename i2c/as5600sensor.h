@@ -13,10 +13,11 @@
 class AS5600Sensor : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT                          // ← auto-registers as QML type in your module
+    QML_ELEMENT
     Q_PROPERTY(double angle READ angle NOTIFY angleChanged FINAL)
     Q_PROPERTY(int rawAngle READ rawAngle NOTIFY rawAngleChanged FINAL)
     Q_PROPERTY(int magnitude READ magnitude NOTIFY magnitudeChanged FINAL)
+    Q_PROPERTY(int status READ status NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged FINAL)
 
 public:
@@ -26,6 +27,7 @@ public:
     double angle() const;
     int rawAngle() const;
     int magnitude() const;
+    int status() const;
     bool active() const;
 
 public slots:
@@ -35,6 +37,7 @@ signals:
     void angleChanged();
     void rawAngleChanged();
     void magnitudeChanged();
+    void statusChanged();
     void activeChanged();
 
 private slots:
@@ -47,6 +50,7 @@ private:
     double m_angle = 0.0;
     int m_rawAngle = 0;
     int m_magnitude = 0;
+    int m_status = 0;
     bool m_active = true;
 };
 

@@ -1,90 +1,95 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-
-// Add this import (use the exact URI from your CMake)
 import i2c_stmp_demo 1.0
 
 Window {
-    width: 640
-    height: 480
+    width: 720; height: 540
     visible: true
-    title: qsTr("I2C AS5600L Demo")
+    title: qsTr("AS5600L Magnetic Angle Sensor")
 
     FontLoader { id: goRegular; source: Qt.resolvedUrl("go_fonts/Go-Regular.ttf") }
 
-    AS5600Sensor {
-        id: sensor
-        active: sw.checked          // Switch now controls live polling
+    AS5600Sensor { id: sensor1; active: true }
+    AS5600Sensor { id: sensor2; active: true }
+
+    property real zeroOffset: 0
+    property real displayAngle: {
+        let a = ((sensor1.angle - zeroOffset) % 360 + 360) % 360
+        return a > 180 ? a - 360 : a
     }
 
-    Label {
-        id: title
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "AS5600L Magnetic Angle Sensor"
-        font.pixelSize: 28
-        font.bold: true
-        color: "black"
-        font.family: goRegular.name
-    }
+    ColumnLayout {
+        anchors { fill: parent; margins: 20 }
+        spacing: 12
 
-    Switch {
-        id: sw
-        scale: 2
-        anchors.top: title.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: checked ? "Live Sensor (Rotation Enabled)" : "Sensor Paused"
-        checked: true
-    }
+        Label {
+            text: "AS5600L Magnetic Angle Sensor"
+            font { pixelSize: 22; bold: true; family: goRegular.name }
+            Layout.alignment: Qt.AlignHCenter
+        }
 
-    RowLayout {
-        anchors.top: sw.bottom
-        anchors.topMargin: 40
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 35
-        spacing: 65
+        RoundButton {
+            text: "ZERO"
+            font { pixelSize: 28; bold: true; family: goRegular.name }
+            Layout.alignment: Qt.AlignHCenter
+            padding: 0
+            implicitWidth: 150; implicitHeight: 150
+            background: Rectangle {
+                radius: width / 2
+                color: parent.pressed ? "#b91c1c" : "#ef4444"
+                border { color: "#ffffff"; width: 5 }
+            }
+            contentItem: Text {
+                text: parent.text; font: parent.font; color: "white"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            onClicked: zeroOffset = sensor1.angle
+        }
 
-        Dial {
-            id: dial
-            Layout.preferredWidth: 190
-            Layout.preferredHeight: 190
-            from: 0
-            to: 360
-            value: sensor.angle
-            enabled: sw.checked
-            Text {
-                anchors.centerIn: parent
-                text: Math.round(dial.value) + "°"
-                font.pixelSize: 22
-                font.bold: true
-                color: sw.checked ? "black" : "#777"
-                font.family: goRegular.name
+        RowLayout {
+            spacing: 50
+            Layout.alignment: Qt.AlignHCenter
+
+            Dial {
+                from: -180; to: 180; value: displayAngle
+                Layout.preferredWidth: 175; Layout.preferredHeight: 175
+                Text {
+                    anchors.centerIn: parent
+                    text: Math.round(displayAngle) + "°"
+                    font { pixelSize: 36; bold: true; family: goRegular.name }
+                    color: "#1f2937"
+                }
+            }
+            Item {
+                Layout.preferredWidth: 250; Layout.preferredHeight: 250
+                Image {
+                    source: Qt.resolvedUrl("assets/dial_no_background.png")
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true; antialiasing: true
+                    width: 250; height: 250
+                    rotation: displayAngle + 140
+                }
+                Label {
+                    text: displayAngle.toFixed(1) + "°"
+                    font { pixelSize: 25; family: goRegular.name }
+                    color: "#555"
+                    anchors {
+                        top: parent.top; topMargin: 12
+                        horizontalCenter: parent.horizontalCenter
+                    }
+                }
+                Label {
+                    text: "Magnet: " +sensor1.status
+                    font { pixelSize: 25; family: goRegular.name }
+                    color: "#ff0000"
+                    anchors {
+                        bottom: parent.bottom; bottomMargin: 12
+                        horizontalCenter: parent.horizontalCenter
+                    }
+                }
             }
         }
-
-        Image {
-            source: Qt.resolvedUrl("assets/dial_no_background.png")
-            fillMode: Image.PreserveAspectFit
-            smooth: true
-            antialiasing: true
-            rotation: sensor.angle + 140
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.maximumWidth: 230
-            Layout.alignment: Qt.AlignVCenter
-        }
-    }
-
-    Label {
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 20
-        text: "Raw: " + sensor.rawAngle + " | Mag: " + sensor.magnitude
-        font.pixelSize: 16
-        font.family: goRegular.name
     }
 }

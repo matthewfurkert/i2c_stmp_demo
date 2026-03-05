@@ -6,15 +6,17 @@
 
 class RealAS5600Sensor : public IAS5600Sensor {
 public:
-    explicit RealAS5600Sensor(int bus = 0);
+    // Device address (default = 0x40 for AS5600L)
+    explicit RealAS5600Sensor(int bus = 0, uint8_t deviceAddr = 0x40);
 
     uint16_t readRawAngle() override;
     uint16_t readMagnitude() override;
+    uint8_t readStatus() override;
     double readAngleDegrees() override;
 
 private:
     SMBus m_bus;
-    static constexpr uint8_t DEVICE_ADDR = 0x40; // AS5600L default = 0x40 (change if needed)
+    uint8_t m_deviceAddr;
 };
 
 #endif // REALAS5600SENSOR_H

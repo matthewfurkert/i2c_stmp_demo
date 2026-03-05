@@ -10,13 +10,15 @@ public:
 
     uint16_t readRawAngle() override;
     uint16_t readMagnitude() override;
+    uint8_t readStatus() override;
     double readAngleDegrees() override;
 
 private:
     void updateSimulation();
 
     uint16_t m_rawAngle = 0;
-    uint16_t m_magnitude = 2048; // typical mid-range value
+    uint16_t m_magnitude = 2048;    // typical mid-range value
+    uint8_t m_status = 32;         // Good manget strength
     std::chrono::steady_clock::time_point m_lastUpdate;
     const double m_speedDegPerSec = 30.0; // smooth rotation for demo (1 rev ~12 s)
 };

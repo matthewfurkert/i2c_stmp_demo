@@ -28,6 +28,12 @@ uint16_t MockAS5600Sensor::readMagnitude() {
     return m_magnitude;
 }
 
+uint8_t MockAS5600Sensor::readStatus()
+{
+    updateSimulation();
+    return m_status;
+}
+
 double MockAS5600Sensor::readAngleDegrees() {
     updateSimulation();
     return static_cast<double>(m_rawAngle) * 360.0 / 4096.0;
