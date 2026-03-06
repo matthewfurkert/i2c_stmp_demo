@@ -132,17 +132,27 @@ ApplicationWindow {
         }
     }
 
-    RowLayout {
-        anchors { fill: parent; margins: 16 }
-        spacing: 18
+    Item {
+            id: contentContainer
+            anchors.fill: parent
+            width:  embeddedDev ? root.height : root.width
+            height: embeddedDev ? root.width  : root.height
+            rotation: embeddedDev ? 270 : 0
+            anchors.centerIn: parent
 
-        Repeater {
-            model: [
-                { sensor: sensor1, title: "Sensor 1 (0x40)" },
-                { sensor: sensor2, title: "Sensor 2 (0x41)" },
-                { sensor: sensor3, title: "Sensor 3 (0x42)" }
-            ]
-            delegate: sensorPanel
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 18
+
+                Repeater {
+                    model: [
+                        { sensor: sensor1, title: "Sensor 1 (0x40)" },
+                        { sensor: sensor2, title: "Sensor 2 (0x41)" },
+                        { sensor: sensor3, title: "Sensor 3 (0x42)" }
+                    ]
+                    delegate: sensorPanel
+                }
+            }
         }
-    }
 }
