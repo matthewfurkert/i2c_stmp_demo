@@ -6,8 +6,8 @@ import i2c_stmp_demo 1.0
 ApplicationWindow {
     id: root
     readonly property bool embeddedDev: Qt.platform.pluginName === "eglfs"
-    width: embeddedDev ? 480 : 940
-    height: embeddedDev ? 820 : 580
+    width: embeddedDev ? 480 : 800
+    height: embeddedDev ? 800 : 480
     visible: true
     title: qsTr("AS5600L - 3 Sensors")
 
