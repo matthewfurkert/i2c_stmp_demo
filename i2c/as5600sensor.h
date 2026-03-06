@@ -19,6 +19,7 @@ class AS5600Sensor : public QObject
     Q_PROPERTY(int magnitude READ magnitude NOTIFY magnitudeChanged FINAL)
     Q_PROPERTY(int status READ status NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged FINAL)
+    Q_PROPERTY(int deviceAddress READ deviceAddress WRITE setDeviceAddress NOTIFY deviceAddressChanged)
 
 public:
     explicit AS5600Sensor(QObject *parent = nullptr);
@@ -29,9 +30,11 @@ public:
     int magnitude() const;
     int status() const;
     bool active() const;
+    int deviceAddress() const;
 
 public slots:
     void setActive(bool active);
+    void setDeviceAddress(int address);
 
 signals:
     void angleChanged();
@@ -39,6 +42,7 @@ signals:
     void magnitudeChanged();
     void statusChanged();
     void activeChanged();
+    void deviceAddressChanged();
 
 private slots:
     void pollSensor();
@@ -52,6 +56,8 @@ private:
     int m_magnitude = 0;
     int m_status = 0;
     bool m_active = true;
+    uint8_t m_deviceAddress = 0x40;
+    void createBackend();
 };
 
 #endif // AS5600SENSOR_H

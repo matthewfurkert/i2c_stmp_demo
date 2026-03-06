@@ -13,12 +13,12 @@
 AS5600Sensor::AS5600Sensor(QObject *parent)
     : QObject(parent)
 {
-    m_timer.setInterval(40); // 25 Hz → buttery-smooth dial
+    m_timer.setInterval(40); // 25 Hz → smooth dial
     connect(&m_timer, &QTimer::timeout, this, &AS5600Sensor::pollSensor);
 
 #ifdef USE_REAL_I2C
     qDebug() << "=== AS5600Sensor MODE: REAL I2C (Hardware) ===";
-    m_backend = std::make_unique<RealAS5600Sensor>(0, 0x40);    // (bus, device address)
+    createBackend();
 #else
     qDebug() << "=== AS5600Sensor MODE: MOCK (Simulation) ===";
     m_backend = std::make_unique<MockAS5600Sensor>();
@@ -26,6 +26,13 @@ AS5600Sensor::AS5600Sensor(QObject *parent)
 
     m_timer.start();
     pollSensor(); // immediate first read
+}
+
+void AS5600Sensor::createBackend()
+{
+#ifdef USE_REAL_I2C
+    m_backend = std::make_unique<RealAS5600Sensor>(0, static_cast<uint8_t>(m_deviceAddress));
+#endif
 }
 
 void AS5600Sensor::pollSensor()
@@ -60,6 +67,27 @@ double AS5600Sensor::angle() const { return m_angle; }
 int AS5600Sensor::rawAngle() const { return m_rawAngle; }
 int AS5600Sensor::magnitude() const { return m_magnitude; }
 int AS5600Sensor::status() const { return m_status; }
+int AS5600Sensor::deviceAddress() const { return m_deviceAddress; }
+
+void AS5600Sensor::setDeviceAddress(int address)
+{
+    if (address == m_deviceAddress)
+        return;
+
+    if (address < 0 || address > 127) {
+        qWarning() << "Invalid I2C address (must be 0-127):" << Qt::hex << address;
+        return;
+    }
+    m_deviceAddress = static_cast<uint8_t>(address);
+
+#ifdef USE_REAL_I2C
+    createBackend();   // recreate with the new address (instant & safe)
+    qDebug() << "AS5600Sensor: Device address changed to 0x" << Qt::hex << address;
+#endif
+
+    emit deviceAddressChanged();
+}
+
 bool AS5600Sensor::active() const { return m_active; }
 
 void AS5600Sensor::setActive(bool active)

@@ -3,93 +3,146 @@ import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import i2c_stmp_demo 1.0
 
-Window {
-    width: 720; height: 540
+ApplicationWindow {
+    id: root
+    readonly property bool embeddedDev: Qt.platform.pluginName === "eglfs"
+    width: embeddedDev ? 480 : 940
+    height: embeddedDev ? 820 : 580
     visible: true
-    title: qsTr("AS5600L Magnetic Angle Sensor")
+    title: qsTr("AS5600L - 3 Sensors")
 
     FontLoader { id: goRegular; source: Qt.resolvedUrl("go_fonts/Go-Regular.ttf") }
 
-    AS5600Sensor { id: sensor1; active: true }
-    AS5600Sensor { id: sensor2; active: true }
+    // === SENSORS ===
+    AS5600Sensor { id: sensor1; deviceAddress: 0x40; active: true }
+    AS5600Sensor { id: sensor2; deviceAddress: 0x41; active: true }
+    AS5600Sensor { id: sensor3; deviceAddress: 0x42; active: true }
 
-    property real zeroOffset: 0
-    property real displayAngle: {
-        let a = ((sensor1.angle - zeroOffset) % 360 + 360) % 360
-        return a > 180 ? a - 360 : a
+    header: ToolBar {
+        Label {
+            anchors.centerIn: parent
+            text: "I2C Demo - AS5600L (3 Sensors)"
+            font { pixelSize: 22; bold: true; family: goRegular.name }
+        }
     }
 
-    ColumnLayout {
-        anchors { fill: parent; margins: 20 }
-        spacing: 12
-
+    footer: ToolBar {
         Label {
-            text: "AS5600L Magnetic Angle Sensor"
-            font { pixelSize: 22; bold: true; family: goRegular.name }
-            Layout.alignment: Qt.AlignHCenter
+            anchors.centerIn: parent
+            text: "Stelth Robotics 2026"
         }
+    }
 
-        RoundButton {
-            text: "ZERO"
-            font { pixelSize: 28; bold: true; family: goRegular.name }
-            Layout.alignment: Qt.AlignHCenter
-            padding: 0
-            implicitWidth: 150; implicitHeight: 150
-            background: Rectangle {
-                radius: width / 2
-                color: parent.pressed ? "#b91c1c" : "#ef4444"
-                border { color: "#ffffff"; width: 5 }
-            }
-            contentItem: Text {
-                text: parent.text; font: parent.font; color: "white"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            onClicked: zeroOffset = sensor1.angle
-        }
+    Component {
+        id: sensorPanel
 
-        RowLayout {
-            spacing: 50
-            Layout.alignment: Qt.AlignHCenter
+        ColumnLayout {
+            spacing: 12
+            Layout.fillWidth: true
 
-            Dial {
-                from: -180; to: 180; value: displayAngle
-                Layout.preferredWidth: 175; Layout.preferredHeight: 175
-                Text {
-                    anchors.centerIn: parent
-                    text: Math.round(displayAngle) + "°"
-                    font { pixelSize: 36; bold: true; family: goRegular.name }
-                    color: "#1f2937"
-                }
+            required property AS5600Sensor sensor
+            required property string title
+
+            // Each panel manages its own zero offset (no root clutter)
+            property real zeroOffset: 0
+
+            // Normalized signed angle (-180° … +180°)
+            property real displayAngle: {
+                const a = ((sensor.angle - zeroOffset) % 360 + 360) % 360
+                return a > 180 ? a - 360 : a
             }
+
+            Label {
+                text: title
+                font { pixelSize: 19; bold: true; family: goRegular.name }
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            CheckBox {
+                Layout.alignment: Qt.AlignHCenter
+                text: "Enabled"
+                checked: sensor.active
+                font { pixelSize: 20; family: goRegular.name }
+                onCheckedChanged: sensor.active = checked
+            }
+
             Item {
-                Layout.preferredWidth: 250; Layout.preferredHeight: 250
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: 192
+                Layout.preferredHeight: 192
+                opacity: sensor.active ? 1.0 : 0.45
+                enabled: sensor.active
+
                 Image {
+                    anchors.centerIn: parent
                     source: Qt.resolvedUrl("assets/dial_no_background.png")
+                    width: 192; height: 192
                     fillMode: Image.PreserveAspectFit
-                    smooth: true; antialiasing: true
-                    width: 250; height: 250
+                    smooth: true
+                    antialiasing: true
                     rotation: displayAngle + 140
                 }
+
                 Label {
                     text: displayAngle.toFixed(1) + "°"
-                    font { pixelSize: 25; family: goRegular.name }
-                    color: "#555"
+                    font { pixelSize: 24; family: goRegular.name }
+                    color: sensor.active ? "#555" : "#999"
                     anchors {
-                        top: parent.top; topMargin: 12
+                        top: parent.top
+                        topMargin: 5
                         horizontalCenter: parent.horizontalCenter
                     }
                 }
+
                 Label {
-                    text: "Magnet: " +sensor1.status
-                    font { pixelSize: 25; family: goRegular.name }
-                    color: "#ff0000"
+                    text: "Magnet: " + sensor.status
+                    font { pixelSize: 19; family: goRegular.name }
+                    color: sensor.active ? "#ff0000" : "#cc6666"
                     anchors {
-                        bottom: parent.bottom; bottomMargin: 12
+                        bottom: parent.bottom
+                        bottomMargin: 12
                         horizontalCenter: parent.horizontalCenter
                     }
                 }
             }
+
+            RoundButton {
+                text: "ZERO"
+                font { pixelSize: 24; bold: true; family: goRegular.name }
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: 130
+                implicitHeight: 48
+                enabled: sensor.active
+                opacity: enabled ? 1.0 : 0.45
+
+                background: Rectangle {
+                    radius: width / 2
+                    color: parent.pressed ? "#b91c1c" : (parent.enabled ? "#ef4444" : "#999999")
+                    border { color: "blue"; width: 4 }
+                }
+                contentItem: Text {
+                    text: parent.text
+                    font: parent.font
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: zeroOffset = sensor.angle
+            }
+        }
+    }
+
+    RowLayout {
+        anchors { fill: parent; margins: 16 }
+        spacing: 18
+
+        Repeater {
+            model: [
+                { sensor: sensor1, title: "Sensor 1 (0x40)" },
+                { sensor: sensor2, title: "Sensor 2 (0x41)" },
+                { sensor: sensor3, title: "Sensor 3 (0x42)" }
+            ]
+            delegate: sensorPanel
         }
     }
 }
