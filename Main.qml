@@ -18,21 +18,6 @@ ApplicationWindow {
     AS5600Sensor { id: sensor2; deviceAddress: 0x41; active: true }
     AS5600Sensor { id: sensor3; deviceAddress: 0x42; active: true }
 
-    header: ToolBar {
-        Label {
-            anchors.centerIn: parent
-            text: "I2C Demo - AS5600L (3 Sensors)"
-            font { pixelSize: 22; bold: true; family: goRegular.name }
-        }
-    }
-
-    footer: ToolBar {
-        Label {
-            anchors.centerIn: parent
-            text: "Stelth Robotics 2026"
-        }
-    }
-
     Component {
         id: sensorPanel
 
@@ -140,6 +125,17 @@ ApplicationWindow {
             rotation: embeddedDev ? 270 : 0
             anchors.centerIn: parent
 
+            ToolBar {
+                id: rotatedHeader
+                width: parent.width
+                anchors.top: parent.top
+                Label {
+                    anchors.centerIn: parent
+                    text: "I2C Demo - AS5600L (3 Sensors)"
+                    font { pixelSize: 22; bold: true; family: goRegular.name }
+                }
+            }
+
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 16
@@ -152,6 +148,15 @@ ApplicationWindow {
                         { sensor: sensor3, title: "Sensor 3 (0x42)" }
                     ]
                     delegate: sensorPanel
+                }
+            }
+            ToolBar {
+                id: rotatedFooter
+                width: parent.width
+                anchors.bottom: parent.bottom
+                Label {
+                    anchors.centerIn: parent
+                    text: "Stelth Robotics 2026"
                 }
             }
         }
