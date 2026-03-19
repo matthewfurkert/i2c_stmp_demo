@@ -1,6 +1,6 @@
 // === i2c/as5600sensor.h ===
-#ifndef AS5600SENSOR_H
-#define AS5600SENSOR_H
+#ifndef AS5600_H
+#define AS5600_H
 
 #include <QObject>
 #include <QTimer>
@@ -8,7 +8,7 @@
 #include <qqmlintegration.h>
 #include <QtQml/qqmlregistration.h>
 
-#include "ias5600sensor.h"
+#include "ias5600.h"
 
 class AS5600Sensor : public QObject
 {
@@ -78,4 +78,4 @@ private:
     void createBackend();
 };
 
-#endif // AS5600SENSOR_H
+#endif // AS5600_H

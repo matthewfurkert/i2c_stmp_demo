@@ -1,5 +1,5 @@
-#ifndef IAS5600SENSOR_H
-#define IAS5600SENSOR_H
+#ifndef IAS5600_H
+#define IAS5600_H
 
 #include <optional>
 #include <cstdint>
@@ -14,4 +14,4 @@ public:
     virtual std::optional<double>   readAngleDegrees() = 0;
 };
 
-#endif // IAS5600SENSOR_H
+#endif // IAS5600_H

@@ -1,11 +1,11 @@
-#include "as5600sensor.h"
+#include "as5600.h"
 #include <cmath>
 #include <QDebug>
 
 #ifdef USE_REAL_DEV
 #include "realas5600sensor.h"
 #else
-#include "mockas5600sensor.h"
+#include "mockas5600.h"
 #endif
 
 AS5600Sensor::AS5600Sensor(QObject *parent)

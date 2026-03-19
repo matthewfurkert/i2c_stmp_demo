@@ -19,10 +19,10 @@ qt_add_qml_module(appi2c_stmp_demo
         Main.qml
         RESOURCES assets/BrushedMetal.jpg assets/dial_no_background.png assets/dial_original.jpg assets/dial_svg.svg go_fonts/Go-Bold-Italic.ttf go_fonts/Go-Bold.ttf go_fonts/Go-Italic.ttf go_fonts/Go-Medium-Italic.ttf go_fonts/Go-Medium.ttf go_fonts/Go-Regular.ttf go_fonts/README
         SOURCES i2c/smbus.hpp
-        SOURCES i2c/ias5600sensor.h
-        SOURCES i2c/mockas5600sensor.h
-        SOURCES i2c/realas5600sensor.h i2c/realas5600sensor.cpp
-        SOURCES i2c/as5600sensor.h i2c/as5600sensor.cpp
+        SOURCES i2c/ias5600.h
+        SOURCES i2c/mockas5600.h
+        SOURCES i2c/realas5600.h i2c/realas5600.cpp
+        SOURCES i2c/as5600.h i2c/as5600.cpp
 )
 
 target_include_directories(appi2c_stmp_demo PRIVATE

@@ -1,7 +1,7 @@
-#ifndef REALAS5600SENSOR_H
-#define REALAS5600SENSOR_H
+#ifndef REALAS5600_H
+#define REALAS5600_H
 
-#include "ias5600sensor.h"
+#include "ias5600.h"
 #include "smbus.hpp"
 
 class RealAS5600Sensor : public IAS5600Sensor {
@@ -19,4 +19,4 @@ private:
     uint8_t m_deviceAddr;
 };
 
-#endif // REALAS5600SENSOR_H
+#endif // REALAS5600_H

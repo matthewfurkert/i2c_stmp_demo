@@ -1,7 +1,7 @@
-#ifndef MOCKAS5600SENSOR_H
-#define MOCKAS5600SENSOR_H
+#ifndef MOCKAS5600_H
+#define MOCKAS5600_H
 
-#include "ias5600sensor.h"
+#include "ias5600.h"
 
 class MockAS5600Sensor : public IAS5600Sensor {
 public:
@@ -26,4 +26,4 @@ private:
     }
 };
 
-#endif // MOCKAS5600SENSOR_H
+#endif // MOCKAS5600_H
