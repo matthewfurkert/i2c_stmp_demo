@@ -14,9 +14,9 @@ ApplicationWindow {
     FontLoader { id: goRegular; source: Qt.resolvedUrl("go_fonts/Go-Regular.ttf") }
 
     // === SENSORS ===
-    AS5600Sensor { id: sensor1; deviceAddress: 0x40; active: true }
-    AS5600Sensor { id: sensor2; deviceAddress: 0x41; active: true }
-    AS5600Sensor { id: sensor3; deviceAddress: 0x42; active: true }
+    AS5600Sensor { id: sensor1; busAddress: 0; deviceAddress: 0x40 }
+    AS5600Sensor { id: sensor2; busAddress: 0; deviceAddress: 0x41 }
+    AS5600Sensor { id: sensor3; busAddress: 0; deviceAddress: 0x42 }
 
     Component {
         id: sensorPanel
@@ -43,20 +43,39 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
             }
 
-            CheckBox {
+            Rectangle {
+                id: errorBox
+                Layout.fillWidth: true
+                Layout.preferredHeight: sensor.valid ? 0 : 25
                 Layout.alignment: Qt.AlignHCenter
-                text: "Enabled"
-                checked: sensor.active
-                font { pixelSize: 20; family: goRegular.name }
-                onCheckedChanged: sensor.active = checked
+
+                color: "#d32f2f"
+                radius: 8
+                clip: true
+
+                // Smooth hide/show animation
+                Behavior on Layout.preferredHeight {
+                    NumberAnimation { duration: 250; easing.type: Easing.OutCubic }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: sensor.errorMessage
+                    color: "white"
+                    font.pixelSize: 15
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    padding: 10
+                    wrapMode: Text.Wrap
+                }
             }
 
             Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: 192
                 Layout.preferredHeight: 192
-                opacity: sensor.active ? 1.0 : 0.45
-                enabled: sensor.active
+                opacity: sensor.valid ? 1.0 : 0.45
+                enabled: sensor.valid
 
                 Image {
                     anchors.centerIn: parent
@@ -71,21 +90,10 @@ ApplicationWindow {
                 Label {
                     text: displayAngle.toFixed(1) + "°"
                     font { pixelSize: 24; family: goRegular.name }
-                    color: sensor.active ? "#555" : "#999"
+                    color: sensor.valid ? "#555" : "#999"
                     anchors {
                         top: parent.top
                         topMargin: 5
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                }
-
-                Label {
-                    text: "Magnet: " + sensor.status
-                    font { pixelSize: 19; family: goRegular.name }
-                    color: sensor.active ? "#ff0000" : "#cc6666"
-                    anchors {
-                        bottom: parent.bottom
-                        bottomMargin: 12
                         horizontalCenter: parent.horizontalCenter
                     }
                 }
@@ -97,12 +105,11 @@ ApplicationWindow {
                 Layout.alignment: Qt.AlignHCenter
                 implicitWidth: 130
                 implicitHeight: 48
-                enabled: sensor.active
-                opacity: enabled ? 1.0 : 0.45
+                opacity: sensor.valid ? 1.0 : 0.45
 
                 background: Rectangle {
                     radius: width / 2
-                    color: parent.pressed ? "#b91c1c" : (parent.enabled ? "#ef4444" : "#999999")
+                    color: parent.pressed ? "#b91c1c" : (sensor.valid ? "#ef4444" : "#999999")
                     border { color: "blue"; width: 4 }
                 }
                 contentItem: Text {

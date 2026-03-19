@@ -20,10 +20,14 @@ qt_add_qml_module(appi2c_stmp_demo
         RESOURCES assets/BrushedMetal.jpg assets/dial_no_background.png assets/dial_original.jpg assets/dial_svg.svg go_fonts/Go-Bold-Italic.ttf go_fonts/Go-Bold.ttf go_fonts/Go-Italic.ttf go_fonts/Go-Medium-Italic.ttf go_fonts/Go-Medium.ttf go_fonts/Go-Regular.ttf go_fonts/README
         SOURCES i2c/smbus.hpp
         SOURCES i2c/ias5600sensor.h
-        SOURCES i2c/mockas5600sensor.h i2c/mockas5600sensor.cpp
+        SOURCES i2c/mockas5600sensor.h
         SOURCES i2c/realas5600sensor.h i2c/realas5600sensor.cpp
-        SOURCES
         SOURCES i2c/as5600sensor.h i2c/as5600sensor.cpp
+)
+
+target_include_directories(appi2c_stmp_demo PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/i2c
 )
 
 option(USE_REAL_I2C "Use real i2c" OFF)
@@ -34,10 +38,6 @@ else()
     message(STATUS "Building with MOCK I2C sensor (perfect for Windows/WSL desktop)")
 endif()
 
-target_include_directories(appi2c_stmp_demo PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/i2c
-)
 target_link_libraries(appi2c_stmp_demo
     PRIVATE Qt6::Quick
 )

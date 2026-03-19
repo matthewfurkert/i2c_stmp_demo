@@ -1,16 +1,17 @@
 #ifndef IAS5600SENSOR_H
 #define IAS5600SENSOR_H
 
+#include <optional>
 #include <cstdint>
 
 class IAS5600Sensor {
 public:
     virtual ~IAS5600Sensor() = default;
 
-    virtual uint16_t readRawAngle() = 0;    // 0..4095 (12-bit)
-    virtual uint16_t readMagnitude() = 0;   // magnetic field strength value
-    virtual uint8_t readStatus() = 0;      // magnetic field strength status
-    virtual double readAngleDegrees() = 0;  // convenient 0.0..359.999
+    virtual std::optional<uint16_t> readRawAngle() = 0;
+    virtual std::optional<uint16_t> readMagnitude() = 0; // magnetic field strength value
+    virtual std::optional<uint8_t>  readStatus()   = 0;
+    virtual std::optional<double>   readAngleDegrees() = 0;
 };
 
 #endif // IAS5600SENSOR_H

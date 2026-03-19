@@ -2,25 +2,28 @@
 #define MOCKAS5600SENSOR_H
 
 #include "ias5600sensor.h"
-#include <chrono>
 
 class MockAS5600Sensor : public IAS5600Sensor {
 public:
-    MockAS5600Sensor();
-
-    uint16_t readRawAngle() override;
-    uint16_t readMagnitude() override;
-    uint8_t readStatus() override;
-    double readAngleDegrees() override;
+    std::optional<uint16_t> readRawAngle() override {
+        updateSimulation();
+        return m_rawAngle;
+    }
+    std::optional<uint16_t> readMagnitude() override { return m_magnitude; }
+    std::optional<uint8_t>  readStatus() override { return m_status; }
+    std::optional<double>   readAngleDegrees() override {
+        return static_cast<double>(m_rawAngle) * 360.0 / 4096.0;
+    }
 
 private:
-    void updateSimulation();
-
     uint16_t m_rawAngle = 0;
-    uint16_t m_magnitude = 2048;    // typical mid-range value
-    uint8_t m_status = 32;         // Good manget strength
-    std::chrono::steady_clock::time_point m_lastUpdate;
-    const double m_speedDegPerSec = 30.0; // smooth rotation for demo (1 rev ~12 s)
+    uint16_t m_magnitude = 2048;
+    uint8_t  m_status = 32;
+    const uint16_t m_angleStep = 14;   // ≈ 1.23° per poll at 25 Hz
+
+    void updateSimulation() {
+        m_rawAngle = (m_rawAngle + m_angleStep) % 4096;
+    }
 };
 
 #endif // MOCKAS5600SENSOR_H
