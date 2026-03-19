@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #ifdef USE_REAL_DEV
-#include "realas5600sensor.h"
+#include "realas5600.h"
 #else
 #include "mockas5600.h"
 #endif
