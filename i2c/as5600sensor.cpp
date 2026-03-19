@@ -2,7 +2,7 @@
 #include <cmath>
 #include <QDebug>
 
-#ifdef USE_REAL_I2C
+#ifdef USE_REAL_DEV
 #include "realas5600sensor.h"
 #else
 #include "mockas5600sensor.h"
@@ -18,7 +18,7 @@ AS5600Sensor::AS5600Sensor(QObject *parent)
 
 void AS5600Sensor::createBackend()
 {
-#ifdef USE_REAL_I2C
+#ifdef USE_REAL_DEV
     m_backend = std::make_unique<RealAS5600Sensor>(m_busAddress, static_cast<uint8_t>(m_deviceAddress));
 #else
     m_backend = std::make_unique<MockAS5600Sensor>();

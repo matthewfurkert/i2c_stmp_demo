@@ -30,9 +30,9 @@ target_include_directories(appi2c_stmp_demo PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/i2c
 )
 
-option(USE_REAL_I2C "Use real i2c" OFF)
-if(USE_REAL_I2C)
-    target_compile_definitions(appi2c_stmp_demo PRIVATE USE_REAL_I2C)
+option(USE_REAL_DEV "Use real i2c" OFF)
+if(USE_REAL_DEV)
+    target_compile_definitions(appi2c_stmp_demo PRIVATE USE_REAL_DEV)
     message(STATUS "Building with REAL I2C hardware (using /dev/i2c-*)")
 else()
     message(STATUS "Building with MOCK I2C sensor (perfect for Windows/WSL desktop)")

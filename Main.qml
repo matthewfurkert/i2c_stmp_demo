@@ -126,11 +126,11 @@ ApplicationWindow {
 
     Item {
             id: contentContainer
-            anchors.fill: parent
+            anchors.centerIn: parent
             width:  embeddedDev ? root.height : root.width
             height: embeddedDev ? root.width  : root.height
             rotation: embeddedDev ? 270 : 0
-            anchors.centerIn: parent
+            transformOrigin: Item.Center
 
             ToolBar {
                 id: rotatedHeader
